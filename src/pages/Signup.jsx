@@ -14,6 +14,7 @@ export default function Signup() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+  import { Link } from "react-router-dom";
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -80,9 +81,9 @@ export default function Signup() {
               name="name"
               placeholder="Enter your name"
               value={formData.name}
-              onChange={handleChange}
-              required
-            />
+          <p className="switch-page">
+            Already have an account? <Link to="/login">Login</Link>
+          </p>
           </div>
 
           <div className="input-group">
