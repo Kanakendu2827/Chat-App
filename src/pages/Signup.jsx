@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../Auth.css";
-import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -14,7 +14,6 @@ export default function Signup() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-  import { Link } from "react-router-dom";
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -81,9 +80,45 @@ export default function Signup() {
               name="name"
               placeholder="Enter your name"
               value={formData.name}
-          <p className="switch-page">
-            Already have an account? <Link to="/login">Login</Link>
-          </p>
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Create a password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm your password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="input-group">
