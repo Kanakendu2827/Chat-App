@@ -14,8 +14,9 @@ function Login() {
     setError("");
     setSuccess("");
 
+    const API_BASE = import.meta.env.VITE_API_BASE || "";
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
