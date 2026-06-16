@@ -9,6 +9,7 @@ function Sidebar({
   onProfilePictureChange,
   onSearchChange,
   onSearchSubmit,
+  onLogout,
 }) {
   return (
     <aside className="sidebar">
@@ -26,6 +27,14 @@ function Sidebar({
             <p>{currentUser?.email || "No email"}</p>
           </div>
         </div>
+
+        <button
+          type="button"
+          className="logout-button"
+          onClick={onLogout}
+        >
+          Logout
+        </button>
 
         <label className="profile-upload">
           <input

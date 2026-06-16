@@ -29,6 +29,13 @@ function Chat() {
   const [attachment, setAttachment] = useState(null);
   const [attachmentLoading, setAttachmentLoading] = useState(false);
 
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    setCurrentUser(null);
+    navigate("/login");
+  };
+
   const loadRecentChats = useCallback(async () => {
     if (!currentUser) return;
     try {
@@ -332,6 +339,7 @@ function Chat() {
         onSearchChange={searchUsers}
         onSearchSubmit={handleSearchSubmit}
         onProfilePictureChange={handleProfilePictureChange}
+        onLogout={handleLogout}
       />
 
       <div className="chat-area">
