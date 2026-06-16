@@ -17,21 +17,29 @@ const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  console.error("Missing MONGODB_URI in environment variables.");
+  console.error("Missing MONGODB_URI");
   process.exit(1);
 }
 
-app.use(cors({ origin: "http://localhost:5173" }));
+// CORS
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://chat-app-dz1c.vercel.app",
+    ],
+    credentials: true,
+  })
+);
 
-// Large payload support for profile pictures and attachments
-app.use(express.json({ limit: "1gb" }));
-app.use(express.urlencoded({
-  limit: "1gb",
-  extended: true,
-  parameterLimit: 1000000,
-}));
-
-console.log("JSON limit set to 100mb");
+// Body parsers
+app.use(express.json({ limit: "100mb" }));
+app.use(
+  express.urlencoded({
+    limit: "100mb",
+    extended: true,
+  })
+);
 
 // Logger
 app.use((req, res, next) => {
@@ -47,6 +55,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/messages", messagesRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Backend Running");
+});
+
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
@@ -57,15 +69,10 @@ mongoose
     console.log("Connected to MongoDB");
 
     app.listen(PORT, () => {
-      console.log(
-        `Server listening on http://localhost:${PORT}`
-      );
+      console.log(`Server running on port ${PORT}`);
     });
   })
-  .catch((error) => {
-    console.error(
-      "MongoDB connection failed:",
-      error
-    );
+  .catch((err) => {
+    console.error("MongoDB connection failed:", err);
     process.exit(1);
   });
