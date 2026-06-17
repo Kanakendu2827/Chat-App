@@ -14,11 +14,13 @@ dotenv.config({ path: `${__dirname}/.env` });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/login_db";
+const JWT_SECRET = process.env.JWT_SECRET || "change_this_secret";
 
-if (!MONGODB_URI) {
-  console.error("Missing MONGODB_URI");
-  process.exit(1);
+if (!process.env.MONGODB_URI) {
+  console.warn(
+    "MONGODB_URI is not set. Falling back to local MongoDB at mongodb://127.0.0.1:27017/login_db"
+  );
 }
 
 // CORS

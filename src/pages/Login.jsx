@@ -30,16 +30,25 @@ function Login() {
       const text = await response.text();
       console.log("Server Response:", text);
 
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch {
-        setError("Server returned invalid JSON.");
-        return;
+      const contentType = response.headers.get("content-type") || "";
+      let data = null;
+      if (contentType.includes("application/json")) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = null;
+        }
       }
 
       if (!response.ok) {
-        setError(data.message || "Login failed.");
+        setError(
+          data?.message || data?.error || text || response.statusText || "Login failed."
+        );
+        return;
+      }
+
+      if (!data) {
+        setError("Server returned invalid JSON.");
         return;
       }
 

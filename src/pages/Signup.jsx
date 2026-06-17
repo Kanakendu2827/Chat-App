@@ -44,23 +44,31 @@ export default function Signup() {
         }),
       });
 
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.message || "Signup failed.");
-        return;
+    const text = await response.text();
+    const contentType = response.headers.get("content-type") || "";
+    let data = null;
+    if (contentType.includes("application/json")) {
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = null;
       }
+    }
 
-      setSuccess(`Account created for ${data.user.name}. You can now log in.`);
-      localStorage.setItem("authToken", data.token);
-      const normalizedUser = {
-        _id: data.user.id,
-        username: data.user.name,
-        email: data.user.email,
-        profilePic: data.user.profilePic || "",
-      };
-      localStorage.setItem("user", JSON.stringify(normalizedUser));
-      navigate("/chat");
-    } catch (err) {
+    if (!response.ok) {
+      setError(
+        data?.message || data?.error || text || response.statusText || "Signup failed."
+      );
+      return;
+    }
+
+    if (!data) {
+      setError("Server returned invalid JSON.");
+      return;
+    }
+
+    navigate("/chat");
+  } catch (err) {
       setError("Unable to connect to the signup server.");
       console.error(err);
     }
