@@ -10,6 +10,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://chat-app-dz1c.vercel.app",
   "https://chat-app-3t3i.vercel.app",
+  "https://chat-app-h23x.vercel.app",
 ];
 
 app.use(
