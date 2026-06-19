@@ -341,6 +341,10 @@ function Chat() {
 
   const removeAttachment = () => setAttachment(null);
 
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <div className="chat-container">
       <Sidebar
@@ -377,117 +381,114 @@ function Chat() {
           ) : (
             <>
               <div className="chat-header">
-              <div className="chat-recipient">
-                <div className="avatar avatar-small">
-                  {selectedUser.profilePic ? (
-                    <img
-                      src={selectedUser.profilePic}
-                      alt={selectedUser.username}
-                    />
-                  ) : (
-                    selectedUser.username
-                      ?.charAt(0)
-                      .toUpperCase()
-                  )}
+                <div className="chat-recipient">
+                  <div className="avatar avatar-small">
+                    {selectedUser.profilePic ? (
+                      <img
+                        src={selectedUser.profilePic}
+                        alt={selectedUser.username}
+                      />
+                    ) : (
+                      selectedUser.username
+                        ?.charAt(0)
+                        .toUpperCase()
+                    )}
+                  </div>
+
+                  <div>
+                    <h3>{selectedUser.username}</h3>
+                    <p>
+                      Chat with {selectedUser.username}
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <h3>{selectedUser.username}</h3>
-                  <p>
-                    Chat with{" "}
-                    {selectedUser.username}
-                  </p>
-                </div>
+                <span className="chat-tag">Online</span>
               </div>
 
-              <span className="chat-tag">
-                Online
-              </span>
-            </div>
+              <div className="messages">
+                {Array.isArray(messages) &&
+                  messages.map((msg, index) => {
+                    const isOwnMessage =
+                      msg?.sender === currentUser?._id;
 
-            <div className="messages">
-              {messages.map((msg, index) => {
-                const isOwnMessage =
-                  msg.sender === currentUser._id;
+                    const senderName = isOwnMessage
+                      ? currentUser.username
+                      : selectedUser?.username || "Unknown";
 
-                const senderName = isOwnMessage
-                  ? currentUser.username
-                  : selectedUser.username;
+                    const senderAvatar = isOwnMessage
+                      ? profilePic
+                      : selectedUser?.profilePic || "";
 
-                const senderAvatar = isOwnMessage
-                  ? profilePic
-                  : selectedUser.profilePic || "";
+                    return (
+                      <Message
+                        key={index}
+                        msg={msg}
+                        isOwnMessage={isOwnMessage}
+                        senderName={senderName}
+                        senderAvatar={senderAvatar}
+                      />
+                    );
+                  })}
+              </div>
 
-                return (
-                  <Message
-                    key={index}
-                    msg={msg}
-                    isOwnMessage={isOwnMessage}
-                    senderName={senderName}
-                    senderAvatar={senderAvatar}
+              <div className="message-input">
+                <label className="attachment-upload-button">
+                  <input
+                    type="file"
+                    onChange={handleAttachmentChange}
                   />
-                );
-              })}
-            </div>
+                  + Attach
+                </label>
 
-            <div className="message-input">
-              <label className="attachment-upload-button">
                 <input
-                  type="file"
-                  onChange={handleAttachmentChange}
+                  type="text"
+                  placeholder="Type a message..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && sendMessage()
+                  }
                 />
-                + Attach
-              </label>
 
-              <input
-                type="text"
-                placeholder="Type a message..."
-                value={message}
-                onChange={(e) =>
-                  setMessage(e.target.value)
-                }
-                onKeyDown={(e) =>
-                  e.key === "Enter" &&
-                  sendMessage()
-                }
-              />
-
-              <button onClick={sendMessage} disabled={attachmentLoading}>
-                {attachmentLoading ? "Preparing..." : "Send"}
-              </button>
-            </div>
-
-            {attachment && (
-              <div className="attachment-preview">
-                {attachment.type === "video" ? (
-                  <video controls src={attachment.url} />
-                ) : attachment.type === "image" ? (
-                  <img src={attachment.url} alt={attachment.name} />
-                ) : (
-                  <div className="attachment-file-preview">
-                    <span>{attachment.name}</span>
-                  </div>
-                )}
                 <button
-                  className="remove-attachment"
-                  type="button"
-                  onClick={removeAttachment}
+                  onClick={sendMessage}
+                  disabled={attachmentLoading}
                 >
-                  Remove
+                  {attachmentLoading ? "Preparing..." : "Send"}
                 </button>
               </div>
-            )}
-          </>
+
+              {attachment && (
+                <div className="attachment-preview">
+                  {attachment.type === "video" ? (
+                    <video controls src={attachment.url} />
+                  ) : attachment.type === "image" ? (
+                    <img
+                      src={attachment.url}
+                      alt={attachment.name}
+                    />
+                  ) : (
+                    <div className="attachment-file-preview">
+                      <span>{attachment.name}</span>
+                    </div>
+                  )}
+                  <button
+                    className="remove-attachment"
+                    type="button"
+                    onClick={removeAttachment}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </>
+          )
         ) : (
           <div className="empty-chat">
             <div>
-              <h2>
-                Choose a contact to begin.
-              </h2>
-              <p>
-                Your recent conversations
-                appear here.
-              </p>
+              <h2>Choose a contact to begin.</h2>
+              <p>Your recent conversations appear here.</p>
             </div>
           </div>
         )}
