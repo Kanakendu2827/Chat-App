@@ -17,11 +17,13 @@ export default async function handler(req, res) {
     }
 
     // Vercel routes requests under /api/* to this catch-all function.
-    // In that setup, req.url is often forwarded without the /api prefix,
-    // while the Express app defines routes under /api/*.
+    // Sometimes Vercel forwards the path without the /api prefix.
     if (!req.url.startsWith("/api")) {
       req.url = `/api${req.url}`;
     }
+
+    // Prevent accidental double /api prefix.
+    req.url = req.url.replace(/^\/api\/api/, "/api");
 
     return app(req, res);
   } catch (error) {
