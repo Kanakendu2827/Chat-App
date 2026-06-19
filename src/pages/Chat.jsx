@@ -28,6 +28,8 @@ function Chat() {
   const [message, setMessage] = useState("");
   const [attachment, setAttachment] = useState(null);
   const [attachmentLoading, setAttachmentLoading] = useState(false);
+  const [loadingChats, setLoadingChats] = useState(false);
+  const [loadingMessages, setLoadingMessages] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -38,6 +40,8 @@ function Chat() {
 
   const loadRecentChats = useCallback(async () => {
     if (!currentUser) return;
+    setLoadingChats(true);
+
     try {
       const res = await fetch(
         `${API_BASE}/api/messages/recent/${currentUser._id}`
@@ -49,6 +53,8 @@ function Chat() {
       setRecentChats(data);
     } catch (err) {
       console.error("Error loading recent chats:", err);
+    } finally {
+      setLoadingChats(false);
     }
   }, [API_BASE, currentUser]);
 
@@ -65,7 +71,12 @@ function Chat() {
     fetchChats();
   }, [currentUser, navigate, loadRecentChats]);
 
-  const fetchMessages = async (userId, otherId) => {
+  const fetchMessages = async (userId, otherId, showLoading = true) => {
+    if (!userId || !otherId) return;
+    if (showLoading) {
+      setLoadingMessages(true);
+    }
+
     try {
       const res = await fetch(
         `${API_BASE}/api/messages/${userId}/${otherId}`
@@ -79,7 +90,17 @@ function Chat() {
       setMessages(data);
     } catch (error) {
       console.error("Error loading messages:", error);
+    } finally {
+      if (showLoading) {
+        setLoadingMessages(false);
+      }
     }
+  };
+
+  const loadMessages = async (user) => {
+    setSelectedUser(user);
+    await fetchMessages(currentUser._id, user._id);
+    await loadRecentChats();
   };
 
   const searchUsers = async (query) => {
@@ -146,17 +167,11 @@ function Chat() {
     }
   };
 
-  const loadMessages = async (user) => {
-    setSelectedUser(user);
-    await fetchMessages(currentUser._id, user._id);
-    await loadRecentChats();
-  };
-
   useEffect(() => {
     if (!selectedUser || !currentUser) return;
 
     const poll = setInterval(() => {
-      fetchMessages(currentUser._id, selectedUser._id);
+      fetchMessages(currentUser._id, selectedUser._id, false);
     }, 3000);
 
     return () => clearInterval(poll);
@@ -335,6 +350,7 @@ function Chat() {
         searchTerm={searchTerm}
         searchResults={searchResults}
         selectedUser={selectedUser}
+        loadingChats={loadingChats}
         onSelectUser={loadMessages}
         onSearchChange={searchUsers}
         onSearchSubmit={handleSearchSubmit}
@@ -344,8 +360,23 @@ function Chat() {
 
       <div className="chat-area">
         {selectedUser ? (
-          <>
-            <div className="chat-header">
+          loadingMessages ? (
+            <div className="chat-loading-skeleton">
+              <div className="chat-skeleton-header skeleton" />
+              <div className="chat-skeleton-messages">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className={`chat-skeleton-bubble skeleton ${
+                      index % 2 ? "right" : "left"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="chat-header">
               <div className="chat-recipient">
                 <div className="avatar avatar-small">
                   {selectedUser.profilePic ? (

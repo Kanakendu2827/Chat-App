@@ -60,10 +60,27 @@ function Login() {
         _id: data.user.id,
         username: data.user.name,
         email: data.user.email,
-        profilePic: data.user.profilePic || "",
       };
 
-      localStorage.setItem("user", JSON.stringify(normalizedUser));
+      const profilePic = data.user.profilePic || "";
+      if (profilePic && profilePic.length < 10000) {
+        normalizedUser.profilePic = profilePic;
+      }
+
+      try {
+        localStorage.setItem("user", JSON.stringify(normalizedUser));
+      } catch (storageError) {
+        if (
+          storageError instanceof DOMException &&
+          storageError.name === "QuotaExceededError"
+        ) {
+          console.warn("Storage quota exceeded. Saving user without profile pic.");
+          delete normalizedUser.profilePic;
+          localStorage.setItem("user", JSON.stringify(normalizedUser));
+        } else {
+          throw storageError;
+        }
+      }
 
       setTimeout(() => {
         navigate("/chat");

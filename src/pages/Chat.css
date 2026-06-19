@@ -108,6 +108,38 @@ body {
   display: none;
 }
 
+.logout-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.95), rgba(79, 70, 229, 0.95));
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.16);
+}
+
+.logout-button:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.logout-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .user-list {
   display: grid;
   gap: 12px;
@@ -177,6 +209,60 @@ body {
   text-align: center;
   color: var(--muted);
   background: rgba(255, 255, 255, 0.03);
+}
+
+.sidebar-skeleton {
+  display: grid;
+  gap: 16px;
+}
+
+.sidebar-skeleton-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.sidebar-skeleton-avatar,
+.sidebar-skeleton-line {
+  background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s linear infinite;
+}
+
+.sidebar-skeleton-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+}
+
+.sidebar-skeleton-lines {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+}
+
+.sidebar-skeleton-line {
+  height: 12px;
+  border-radius: 999px;
+}
+
+.sidebar-skeleton-line.short {
+  width: 65%;
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .sidebar-search {
@@ -489,6 +575,47 @@ body {
 
   .chat-area {
     min-height: 560px;
+  }
+
+  .chat-loading-skeleton {
+    display: grid;
+    gap: 22px;
+    padding: 24px;
+    min-height: 420px;
+  }
+
+  .chat-skeleton-header,
+  .chat-skeleton-bubble {
+    background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.6s linear infinite;
+    border-radius: 24px;
+  }
+
+  .chat-skeleton-header {
+    height: 20px;
+    width: 40%;
+    margin-bottom: 12px;
+  }
+
+  .chat-skeleton-messages {
+    display: grid;
+    gap: 18px;
+  }
+
+  .chat-skeleton-bubble {
+    min-height: 80px;
+    width: 90%;
+  }
+
+  .chat-skeleton-bubble.left {
+    justify-self: start;
+    width: 70%;
+  }
+
+  .chat-skeleton-bubble.right {
+    justify-self: end;
+    width: 85%;
   }
 
   .chat-header {

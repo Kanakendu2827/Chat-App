@@ -5,6 +5,7 @@ function Sidebar({
   searchTerm,
   searchResults,
   selectedUser,
+  loadingChats,
   onSelectUser,
   onProfilePictureChange,
   onSearchChange,
@@ -33,7 +34,8 @@ function Sidebar({
           className="logout-button"
           onClick={onLogout}
         >
-          Logout
+          <span className="logout-icon">⏻</span>
+          Sign out
         </button>
 
         <label className="profile-upload">
@@ -62,7 +64,19 @@ function Sidebar({
       </div>
 
       <div className="user-list">
-        {searchTerm ? (
+        {loadingChats ? (
+          <div className="sidebar-skeleton">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div key={index} className="sidebar-skeleton-item">
+                <div className="sidebar-skeleton-avatar skeleton" />
+                <div className="sidebar-skeleton-lines">
+                  <div className="sidebar-skeleton-line skeleton" />
+                  <div className="sidebar-skeleton-line skeleton short" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : searchTerm ? (
           searchResults.length > 0 ? (
             searchResults.map((user) => (
               <button
