@@ -6,7 +6,11 @@ import "./Chat.css";
 
 function Chat() {
   const navigate = useNavigate();
-  const API_BASE = import.meta.env.VITE_API_BASE || "";
+  const API_BASE =
+    import.meta.env.VITE_API_BASE ||
+    import.meta.env.VITE_API_URL ||
+    "";
+  const apiBaseNoSlash = API_BASE.replace(/\/$/, "");
 
   const [currentUser, setCurrentUser] = useState(() => {
     try {
@@ -44,7 +48,7 @@ function Chat() {
 
     try {
       const res = await fetch(
-        `${API_BASE}/api/messages/recent/${currentUser._id}`
+        `${apiBaseNoSlash}/api/messages/recent/${currentUser._id}`
       );
       if (!res.ok) {
         throw new Error("Failed to load recent chats");
@@ -79,7 +83,7 @@ function Chat() {
 
     try {
       const res = await fetch(
-        `${API_BASE}/api/messages/${userId}/${otherId}`
+        `${apiBaseNoSlash}/api/messages/${userId}/${otherId}`
       );
 
       if (!res.ok) {
@@ -113,7 +117,7 @@ function Chat() {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/users`);
+      const res = await fetch(`${apiBaseNoSlash}/api/users`);
       if (!res.ok) {
         throw new Error("Search failed");
       }
@@ -196,7 +200,7 @@ function Chat() {
     try {
       console.log("Sending message payload:", payload);
       const response = await fetch(
-        `${API_BASE}/api/messages/send`,
+        `${apiBaseNoSlash}/api/messages/send`,
         {
           method: "POST",
           headers: {
@@ -259,7 +263,7 @@ function Chat() {
         const imageUrl = reader.result;
 
         const response = await fetch(
-          `${API_BASE}/api/users/${currentUser._id}/profile-picture`,
+          `${apiBaseNoSlash}/api/users/${currentUser._id}/profile-picture`,
           {
             method: "PUT",
             headers: {

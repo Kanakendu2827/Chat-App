@@ -14,9 +14,13 @@ function Login() {
     setError("");
     setSuccess("");
 
-    const API_BASE = import.meta.env.VITE_API_BASE || "";
+    const API_BASE =
+      import.meta.env.VITE_API_BASE ||
+      import.meta.env.VITE_API_URL ||
+      "";
+    const apiUrl = `${API_BASE.replace(/\/$/, "")}/api/auth/login`;
     try {
-      const response = await fetch(`${API_BASE}/api/auth/login`, {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

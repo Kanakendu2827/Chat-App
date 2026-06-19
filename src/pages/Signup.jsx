@@ -30,9 +30,13 @@ export default function Signup() {
       return;
     }
 
-    const API_BASE = import.meta.env.VITE_API_BASE || "";
+    const API_BASE =
+      import.meta.env.VITE_API_BASE ||
+      import.meta.env.VITE_API_URL ||
+      "";
+    const apiUrl = `${API_BASE.replace(/\/$/, "")}/api/auth/signup`;
     try {
-      const response = await fetch(`${API_BASE}/api/auth/signup`, {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
