@@ -9,6 +9,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "https://chat-app-dz1c.vercel.app",
+  "https://chat-app-3t3i.vercel.app",
 ];
 
 app.use(
