@@ -53,10 +53,11 @@ The frontend sends login and signup requests to `/api/auth/login` and `/api/auth
 If you deploy the frontend to Vercel you will need to point API calls to a running backend. The app uses `VITE_API_BASE` at build time when present, and falls back to relative `/api/...` paths (for local Vite proxy). Steps:
 
 1. Deploy your backend (recommended: Render, Railway, Fly, Heroku, or a separate Vercel project using Serverless Functions).
-2. In the Vercel dashboard for the frontend project, set the Environment Variable `VITE_API_BASE` to your backend URL (for example `https://my-backend.example.com`).
-3. Redeploy the frontend project on Vercel so the build picks up the environment variable.
+2. In the Vercel dashboard for the backend project, set the Environment Variable `MONGODB_URI` to your MongoDB connection string.
+3. In the Vercel dashboard for the frontend project, set the Environment Variable `VITE_API_BASE` to your backend URL (for example `https://my-backend.example.com`). If your backend is also deployed to Vercel, use the backend deployment URL.
+4. Redeploy both backend and frontend projects so the new environment variables take effect.
 
-Example: if your backend is at `https://api.example.com`, set `VITE_API_BASE=https://api.example.com`.
+Example: if your backend is at `https://chat-app-inmb.vercel.app`, set `VITE_API_BASE=https://chat-app-inmb.vercel.app`.
 
 Notes & troubleshooting
 - We replaced the native `bcrypt` dependency in the server with `bcryptjs` to avoid native build issues on Vercel (see `server/package.json`).

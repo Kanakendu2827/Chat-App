@@ -6,12 +6,14 @@ import messagesRoutes from "./routes/messages.js";
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://chat-app-dz1c.vercel.app",
-  "https://chat-app-3t3i.vercel.app",
-  "https://chat-app-h23x.vercel.app",
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()).filter(Boolean)
+  : [
+      "http://localhost:5173",
+      "https://chat-app-dz1c.vercel.app",
+      "https://chat-app-3t3i.vercel.app",
+      "https://chat-app-h23x.vercel.app",
+    ];
 
 app.use(
   cors({

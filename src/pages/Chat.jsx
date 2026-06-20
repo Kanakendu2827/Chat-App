@@ -6,11 +6,25 @@ import "./Chat.css";
 
 function Chat() {
   const navigate = useNavigate();
-  const API_BASE =
-    import.meta.env.VITE_API_BASE ||
-    (import.meta.env.PROD ? import.meta.env.VITE_API_URL : "") ||
-    "";
+  const API_BASE = import.meta.env.DEV
+    ? import.meta.env.VITE_API_BASE || ""
+    : import.meta.env.VITE_API_BASE || import.meta.env.VITE_API_URL || "";
+
   const apiBaseNoSlash = API_BASE.replace(/\/$/, "");
+  const getApiUrl = (path) => {
+    if (apiBaseNoSlash) {
+      return `${apiBaseNoSlash}${path}`;
+    }
+
+    if (import.meta.env.DEV) {
+      return path;
+    }
+
+    console.error(
+      "Missing VITE_API_BASE or VITE_API_URL in production. Set the frontend Vercel environment variable to your backend URL."
+    );
+    return path;
+  };
 
   const [currentUser, setCurrentUser] = useState(() => {
     try {
