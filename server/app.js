@@ -45,4 +45,15 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+// Generic error handler
+app.use((err, req, res, next) => {
+  console.error("Unhandled server error:", err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(err.status || 500).json({
+    message: err.message || "Internal server error.",
+  });
+});
+
 export default app;

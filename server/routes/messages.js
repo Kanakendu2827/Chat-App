@@ -1,10 +1,15 @@
 import express from "express";
+import mongoose from "mongoose";
 import Message from "../models/Message.js";
 
 const router = express.Router();
 
 router.get("/recent/:userId", async (req, res) => {
   const { userId } = req.params;
+
+  if (!mongoose.isValidObjectId(userId)) {
+    return res.status(400).json({ message: "Invalid userId format." });
+  }
 
   try {
     const messages = await Message.find({
@@ -49,6 +54,11 @@ router.get("/recent/:userId", async (req, res) => {
 // Get messages between two users (both directions)
 router.get("/:userId/:otherId", async (req, res) => {
   const { userId, otherId } = req.params;
+
+  if (!mongoose.isValidObjectId(userId) || !mongoose.isValidObjectId(otherId)) {
+    return res.status(400).json({ message: "Invalid user ID format." });
+  }
+
   try {
     const msgs = await Message.find({
       $or: [
@@ -78,6 +88,11 @@ router.get("/:userId/:otherId", async (req, res) => {
 router.post("/send", async (req, res) => {
   console.log("Message send body:", req.body);
   const { senderId, receiverId, text = "", attachment } = req.body;
+
+  if (!mongoose.isValidObjectId(senderId) || !mongoose.isValidObjectId(receiverId)) {
+    return res.status(400).json({ message: "Invalid senderId or receiverId format." });
+  }
+
   const hasAttachment = Boolean(
     attachment &&
       typeof attachment.url === "string" &&

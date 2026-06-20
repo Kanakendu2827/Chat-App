@@ -16,7 +16,7 @@ function Login() {
 
     const API_BASE =
       import.meta.env.VITE_API_BASE ||
-      import.meta.env.VITE_API_URL ||
+      (import.meta.env.PROD ? import.meta.env.VITE_API_URL : "") ||
       "";
     const apiUrl = `${API_BASE.replace(/\/$/, "")}/api/auth/login`;
     try {
